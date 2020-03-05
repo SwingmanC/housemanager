@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/account_head::head('中介注册')"></head>
+	<body class="style-3">
+
+		<div class="container">
+			<header th:replace="common/account_header::header"></header>
+			<div class="row">
+				<div class="col-md-4 col-md-push-8">
+
+					<!-- Start Sign In Form -->
+					<form action="/house/agency/addAgency" method="post" class="fh5co-form animate-box" data-animate-effect="fadeInRight" onsubmit="checkForm()">
+						<h2>中介公司注册</h2>
+						<div class="form-group">
+							<label for="name" class="sr-only">公司名</label>
+							<input type="text" class="form-control" id="name" placeholder="公司名" autocomplete="off" name="name">
+						</div>
+						<div class="form-group">
+							地址:
+							<select name="province" id="province" class="form-control" onclick="getAddressByProvince()">
+								<option value=""></option>
+								<option value="湖南">湖南</option>
+							</select>
+							<br>
+							<select name="city" id="city" class="form-control" onclick="getAddressByCity()">
+									<option value="北京">北京</option>
+									<option value="上海">上海</option>
+									<option value="天津">天津</option>
+									<option value="重庆">重庆</option>
+							</select>
+							<br>
+							<select name="region" id="region" class="form-control">
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="email" class="sr-only">电子邮件</label>
+							<input type="email" class="form-control" id="email" placeholder="电子邮件" autocomplete="off" name="email" onblur="emailIsValid()">
+							<div id="emailMsg"></div>
+                        </div>
+						<div class="form-group">
+							<label for="phone" class="sr-only">电话</label>
+							<input type="phone" class="form-control" id="phone" placeholder="电话" autocomplete="off" name="phone" onblur="telephoneIsExist()">
+						</div>
+						<div class="form-group">
+							<label for="location" class="sr-only">具体位置</label>
+							<input type="text" class="form-control" id="location" placeholder="具体位置" autocomplete="off" name="location">
+						</div>
+						<div class="form-group">
+							<p>已经注册? <a th:href="@{/agency/viewLogin}">登录</a></p>
+						</div>
+						<div class="form-group">
+							<input type="submit" id="agency_submit" value="注册" class="btn btn-primary">
+						</div>
+					</form>
+					<!-- END Sign In Form -->
+
+
+				</div>
+			</div>
+			<div class="row" style="padding-top: 60px; clear: both;">
+				<div class="col-md-12 text-center"><p><small>&copy; All Rights Reserved. Designed by <a href="https://freehtml5.co">FreeHTML5.co</a></small></p></div>
+			</div>
+		</div>
+
+	</body>
+
+<script>
+
+    function emailIsValid(){
+        var email=$("#email").val();
+        var div=document.getElementById("emailMsg");
+
+        if(email.trim().length>0) {
+            var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+            var isok= reg.test(email);
+            if(!isok) {
+                div.innerHTML="<font color='red'>邮箱格式不正确</font>";
+                return false;
+            }
+            else
+            {
+                div.innerHTML="";
+                return true;
+            }
+        }
+    }
+
+
+    function checkForm()
+    {
+        var name=$("#name").val();
+        var telephone=$("#phone").val();
+        var email=$('#email').val();
+        //var province=$('#province').val();
+        var city=$('#city').val()
+		var region=$('#region').val();
+        var location=$('#location').val();
+
+        if(name.trim().length===0||telephone.trim().length===0||email.trim().length===0||city.trim().length===0||region.trim().length===0||location.trim().length===0)
+        {
+            alert("请补全信息");
+            return false;
+        }
+        else
+            return true;
+    }
+
+    function getAddressByProvince() {
+        var province = $('#province').val();
+		$.ajax({
+			async:true,
+			type:'get',
+			url:'/house/address/province',
+			data:{
+			    "province":province
+			},
+			dataType:'json',
+			cache:false,
+			success:function (data) {
+				var addressInfoList = data["data"];
+				var htmlData = "";
+				var cityList=new Array();
+				for(var i=0;i<addressInfoList.length;i++)
+				{
+					if(cityList.indexOf(addressInfoList[i].city)===-1)
+					    cityList.push(addressInfoList[i].city);
+				}
+
+				for(var i=0;i<cityList.length;i++)
+				{
+				    htmlData+="<option value="+cityList[i]+">"+cityList[i]+"</option>"
+				}
+				$("#city").html(htmlData);
+            }
+		})
+    }
+
+    function getAddressByCity() {
+        var city = $('#city').val();
+        $.ajax({
+            async:true,
+            type:'get',
+            url:'/house/address/city',
+            data:{
+                "city":city
+            },
+            dataType:'json',
+            cache:false,
+            success:function (data) {
+                var addressInfoList = data["data"];
+                var htmlData = "";
+                var regionList=new Array();
+                for(var i=0;i<addressInfoList.length;i++)
+                {
+                    if(regionList.indexOf(addressInfoList[i].region)===-1)
+                        regionList.push(addressInfoList[i].region);
+                }
+
+                for(var i=0;i<regionList.length;i++)
+                {
+                    htmlData+="<option value="+regionList[i]+">"+regionList[i]+"</option>"
+                }
+                $("#region").html(htmlData);
+            }
+        })
+    }
+
+</script>
+
+</html>
+

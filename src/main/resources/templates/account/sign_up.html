@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/account_head::head('用户注册')"></head>
+	<body class="style-3">
+
+		<div class="container">
+            <header th:replace="common/account_header::header"></header>
+			<div class="row">
+				<div class="col-md-4 col-md-push-8">
+					
+
+					<!-- Start Sign In Form -->
+					<form action="/house/user/register" method="post" class="fh5co-form animate-box" data-animate-effect="fadeInRight" onsubmit="checkForm()">
+						<h2>Sign Up</h2>
+						<div class="form-group">
+							<div class="alert alert-success" role="alert">用户注册</div>
+						</div>
+						<div class="form-group">
+							<label for="name" class="sr-only">姓名</label>
+							<input type="text" class="form-control" id="name" placeholder="姓名" autocomplete="off" name="name">
+						</div>
+						<div class="form-group">
+							<label for="password" class="sr-only">密码</label>
+							<input type="password" class="form-control" id="password" placeholder="密码" autocomplete="off" name="password" onblur="passwordIsValid()">
+                            <div id="passwordMsg"></div>
+						</div>
+						<div class="form-group">
+							<label for="re-password" class="sr-only">重复密码</label>
+							<input type="password" class="form-control" id="re-password" placeholder="重复密码" autocomplete="off" onblur="passwordIsSame()">
+                            <div id="re-passwordMsg"></div>
+						</div>
+						<div class="form-group">
+							<label for="phone" class="sr-only">手机号</label>
+							<input type="phone" class="form-control" id="phone" placeholder="手机号" autocomplete="off" value="" name="phone" onblur="telephoneIsExist()">
+                            <div id="phoneMsg"></div>
+						</div>
+						<div class="form-group">
+							<label for="vericode" class="sr-only">验证码</label>
+							<input type="vericode" class="form-control" id="vericode" placeholder="6位验证码" autocomplete="off" onblur="check()"><br/>
+							<button id="veribnt" onclick="sendCode()" class="btn btn-primary" disabled="disabled">获取验证码</button>
+                            <div id="veriMsg"></div>
+							<!--<script>-->
+								<!--var i=59;-->
+								<!--var myVar;-->
+								<!--function myFunction() {-->
+									<!--document.getElementById("veribnt").disabled=true;-->
+									<!--myVar=setInterval(timer,1000);-->
+								<!--}-->
+								<!--function timer(){-->
+									<!--i&#45;&#45;;-->
+									<!--document.getElementById("veribnt").innerHTML=i;-->
+									<!--if(i<=1)-->
+									<!--{-->
+										<!--window.clearInterval(myVar);-->
+										<!--document.getElementById("veribnt").disabled=false;-->
+										<!--document.getElementById("veribnt").innerHTML="验证码";-->
+									<!--}-->
+								<!--}-->
+							<!--</script>-->
+						</div>
+						<div class="form-group">
+							<p>Already registered? <a th:href="@{/user/viewLogin}">登录</a></p>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="注册" class="btn btn-primary" id="user_submit" disabled="disabled=">
+						</div>
+					</form>
+					<!-- END Sign In Form -->
+
+
+				</div>
+			</div>
+			<div class="row" style="padding-top: 60px; clear: both;">
+				<div class="col-md-12 text-center"><p><small>&copy; All Rights Reserved. Designed by <a href="https://freehtml5.co">FreeHTML5.co</a></small></p></div>
+			</div>
+		</div>
+
+	</body>
+<script>
+    var i=59;
+    var myVar;
+    function myFunction() {
+        document.getElementById("veribnt").disabled=true;
+        myVar=setInterval(timer,1000);
+    }
+    function timer(){
+        i--;
+        document.getElementById("veribnt").innerHTML=i;
+        if(i<=1)
+        {
+            window.clearInterval(myVar);
+            document.getElementById("veribnt").disabled=false;
+            document.getElementById("veribnt").innerHTML="获取验证码";
+        }
+    }
+
+    function telephoneIsExist() {
+        var telephone = $("#phone").val();
+        if (telephone.trim() !== '')
+        {
+            $.ajax({
+                async:true,
+                type:'get',
+                url:'/house/user/telephoneIsExist',
+                data:{'telephone':telephone},
+                dataType:'json',
+                cache:false,
+                success:function (data) {
+                    if(data["data"]==='yes')
+                    {
+                        $("#phoneMsg").html("<font color='red'>此号码已被注册</font>")
+                    }
+                    else
+                    {
+                        $("#phoneMsg").html("")
+                        $("#veribnt").attr("disabled",false);
+                    }
+                    
+                },
+                error:function () {
+                    alert("系统错误");
+                }
+            });
+        };
+    }
+
+    function passwordIsValid() {
+        var pass=$("#password").val();
+
+        if(pass.trim().length>0&&pass.trim().length<6)
+        {
+            $('#passwordMsg').html("<font color='red'>密码强度太低</font>");
+            return false;
+        }
+        else if(pass.trim().length>16) {
+            $('#passwordMsg').html("<font color='green'>密码过长</font>");
+            return false;
+        }
+        else
+        {
+            $('#passwordMsg').html("");
+            return true;
+        }
+    }
+
+    function passwordIsSame(){
+        var pass1=$("#password").val();
+        var pass2=$("#re-password").val();
+
+        if(pass1!==pass2&&pass2.trim().length>0){
+            $('#re-passwordMsg').html("<font color='red'>两次密码不一致</font>");
+            return false;
+        }
+        else if (pass2.trim().length===0)
+            return false;
+        else if(pass1===pass2&&pass1.trim().length>0)
+        {
+            $("#re-passwordMsg").html("");
+            return true;
+        }
+    }
+
+    function checkForm()
+    {
+        var name=$("#name").val();
+        var pass1=$("#password").val();
+        var pass2=$("#re-password").val();
+        var telephone=$("#phone").val();
+
+        if(name.trim().length===0||pass1.trim().length===0||pass2.trim().length===0||telephone.trim().length===0)
+        {
+            return false;
+        }
+        else if(!passwordIsValid()||!passwordIsSame())
+        {
+            return false;
+        }
+        else
+            return true;
+    }
+
+    function sendCode()
+    {
+        myFunction();
+        var telephone = $("#phone").val();
+        $.ajax({
+            async:true,
+            type:'get',
+            url:'/house/user/sendCode',
+            data:{
+                "telephone":telephone
+            },
+            dataType:'json',
+            cache:false,
+        });
+    }
+
+    function check() {
+        $.ajax({
+            async:true,
+            type:'get',
+            url:'/house/user/verify',
+            data:{
+               'telephone':$('#phone').val(),
+               'messageCode':$('#vericode').val()
+            },
+            dataType:'json',
+            cache:false,
+            success:function (data) {
+                if (data["data"]==="验证成功"&&checkForm())
+                {
+                    $("#veriMsg").html("")
+                    $('#user_submit').attr("disabled",false);
+                }
+                else if(data["message"]!=="success")
+                {
+                    $("#veriMsg").html("<font color='red'>验证码错误</font>")
+                }
+            },
+            error:function () {
+            }
+        });
+    }
+    
+</script>
+</html>
+
+

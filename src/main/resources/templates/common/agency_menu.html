@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header th:fragment="agency_menu">
+    <nav class="navigation">
+        <div class="container-fluid">
+            <div class="navigation__column left">
+                <div class="header__logo"><a class="ps-logo" th:href="@{/index}"><img th:src="@{/images/logo.png}" alt=""></a></div>
+            </div>
+            <div class="navigation__column center">
+
+                <ul class="main-menu menu">
+
+                    <li class="menu-item"><a th:href="@{/agency/getHouses}">房产列表</a></li>
+
+                    <li class="menu-item"><a th:href="@{/agency/getOrders}">订单列表</a></li>
+
+                    <li class="menu-item"><a th:href="@{'/agency/getAgencyInfo?agencyId='+${session.agencyInfo.agencyId}}">公司信息</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+</html>

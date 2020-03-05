@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<!--[if IE 7]><html class="ie ie7"><![endif]-->
+<!--[if IE 8]><html class="ie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie ie9"><![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/house_head::head('发布房产')"></head>
+<!--[if IE 7]><body class="ie7 lt-ie8 lt-ie9 lt-ie10"><![endif]-->
+<!--[if IE 8]><body class="ie8 lt-ie9 lt-ie10"><![endif]-->
+<!--[if IE 9]><body class="ie9 lt-ie10"><![endif]-->
+<body class="ps-loading">
+<div class="header--sidebar"></div>
+
+
+<header class="header">
+	<header th:replace="common/house_header::top"></header>
+	<div th:if="${session.userInfo==null&&session.adminInfo==null&&session.agencyInfo==null}">
+		<nav class="navigation">
+			<div class="container-fluid">
+				<div class="navigation__column left">
+					<div class="header__logo"><a class="ps-logo" th:href="@{/index}"><img th:src="@{/images/logo.png}" alt=""></a></div>
+				</div>
+				<div class="navigation__column center">
+
+					<ul class="main-menu menu">
+
+						<li class="menu-item menu-item-has-children dropdown"><a th:href="@{/index}">主页</a></li>
+
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<div th:if="${session.userInfo!=null}">
+		<header th:replace="common/user_menu::user_menu"></header>
+	</div>
+	<div th:if="${session.adminInfo!=null}">
+		<header th:replace="common/admin_menu::admin_menu"></header>
+	</div>
+	<div th:if="${session.agencyInfo!=null}">
+		<header th:replace="common/agency_menu::agency_menu"></header>
+	</div>
+</header>
+
+
+
+
+<div class="main">
+      <div class="porduct-order-agile">
+
+		  <form action="/house/addHouse" method="post">
+			  <div class="form-group">
+				  所在省份:
+				  <select name="province" id="province" class="form-control" onclick="getAddressByProvince()">
+                      <option value=""></option>
+					  <option value="湖南">湖南</option>
+				  </select>
+				  <br>
+				  所在城市:
+				  <select name="city" id="city" class="form-control" onclick="getAddressByCity()">
+					  <option value="北京">北京</option>
+					  <option value="上海">上海</option>
+					  <option value="天津">天津</option>
+					  <option value="重庆">重庆</option>
+				  </select>
+				  <br>
+				  所在区/县/乡:
+				  <select name="region" id="region" class="form-control" onclick="getAgencyByAddress()">
+				  </select>
+			  </div>
+
+              <div class="form-group">
+                  选择中介:
+                  <select name="agency" id="agency" class="form-control">
+                  </select>
+              </div>
+
+			  <div class="form-group">
+				  <p>位置</p>
+				  <input type="text" name="location" placeholder="" required="">
+			  </div>
+
+			  <div class="form-group">
+					  <p>建成时间</p>
+					  <input type="date" name="completeTime" placeholder="" required="">
+			  </div>
+			  <div class="form-group">
+					  <p>发售时间</p>
+					  <input type="date" name="releaseTime" placeholder="" required="">
+			  </div>
+
+
+			  <div class="main">
+				  <div class="form-left-to-w3l">
+					  <p>面积</p>
+					  <div class="clear"></div>
+					  <input type="number" name="area" placeholder="" required="">
+				  </div>
+				  <div class="form-left-to-w3l">
+					  <p>类型</p>
+					  <input type="text" name="type" placeholder="" required="">
+					  <div class="clear"></div>
+				  </div>
+			  </div>
+
+
+			  <div class="main">
+				  <div class="form-left-to-w3l">
+					  <p>每平米价格</p>
+					  <input type="number" name="unitPrice" placeholder="" required="">
+					  <div class="clear"></div>
+				  </div>
+
+				  <div class="form-left-to-w3l">
+					  <p>首付价</p>
+					  <input type="number" name="firstPrice" placeholder="" required="">
+					  <div class="clear"></div>
+				  </div>
+			  </div>
+
+			  <div class="main">
+				  <div class="form-left-to-w3l">
+					  <p>总价</p>
+					  <input type="number" name="totalPrice" placeholder="" required="">
+					  <div class="clear"></div>
+				  </div>
+
+
+				  <div class="form-left-to-w3l">
+					  <p>房产年限</p>
+					  <input type="number" name="propertyRight" placeholder="" required="">
+					  <div class="clear"></div>
+				  </div>
+			  </div>
+
+			  <button type="submit" class="btn btn-primary">Submit</button>
+		  </form>
+      </div>
+      <!-- copyright -->
+    </div>
+
+
+<div class="ps-subscribe">
+	<div class="ps-container">
+		<div class="row">
+			<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+				<h3><i class="fa fa-envelope"></i>Sign up to Newsletter</h3>
+			</div>
+			<div class="col-lg-5 col-md-7 col-sm-12 col-xs-12 ">
+				<form class="ps-subscribe__form" action="do_action" method="post">
+					<input class="form-control" type="text" placeholder="">
+					<button>Sign up now</button>
+				</form>
+			</div>
+			<div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 ">
+				<p>...and receive  <span>$20</span>  coupon for first shopping.</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="ps-footer bg--cover" data-background="/house/images/background/parallax.jpg}">
+	<div class="ps-footer__content">
+		<div class="ps-container">
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--info">
+						<header><a class="ps-logo" href="index.html"><img th:src="@{/images/logo-white.png}" alt=""></a>
+							<h3 class="ps-widget__title">Address Office 1</h3>
+						</header>
+						<footer>
+							<p><strong>460 West 34th Street, 15th floor, New York</strong></p>
+							<p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+							<p>Phone: +323 32434 5334</p>
+							<p>Fax: ++323 32434 5333</p>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--info second">
+						<header>
+							<h3 class="ps-widget__title">Address Office 2</h3>
+						</header>
+						<footer>
+							<p><strong>PO Box 16122 Collins  Victoria 3000 Australia</strong></p>
+							<p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+							<p>Phone: +323 32434 5334</p>
+							<p>Fax: ++323 32434 5333</p>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Find Our store</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--link">
+								<li><a href="#">Coupon Code</a></li>
+								<li><a href="#">SignUp For Email</a></li>
+								<li><a href="#">Site Feedback</a></li>
+								<li><a href="#">Careers</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Get Help</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--line">
+								<li><a href="#">Order Status</a></li>
+								<li><a href="#">Shipping and Delivery</a></li>
+								<li><a href="#">Returns</a></li>
+								<li><a href="#">Payment Options</a></li>
+								<li><a href="#">Contact Us</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Products</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--line">
+								<li><a href="#">Shoes</a></li>
+								<li><a href="#">Clothing</a></li>
+								<li><a href="#">Accessries</a></li>
+								<li><a href="#">Football Boots</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ps-footer__copyright">
+		<div class="ps-container">
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+					<p>Copyright &copy; 2019.CSU-SoftWare All rights reserved.</p>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+					<ul class="ps-social">
+						<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+						<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#"><i class="fa fa-instagram"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</main>
+</body>
+
+<script>
+    function getAddressByProvince() {
+        var province = $('#province').val();
+        $.ajax({
+            async:true,
+            type:'get',
+            url:'/house/address/province',
+            data:{
+                "province":province
+            },
+            dataType:'json',
+            cache:false,
+            success:function (data) {
+                var addressInfoList = data["data"];
+                var htmlData = "";
+                var cityList=new Array();
+                for(var i=0;i<addressInfoList.length;i++)
+                {
+                    if(cityList.indexOf(addressInfoList[i].city)===-1)
+                        cityList.push(addressInfoList[i].city);
+                }
+
+                for(var i=0;i<cityList.length;i++)
+                {
+                    htmlData+="<option value="+cityList[i]+">"+cityList[i]+"</option>"
+                }
+                $("#city").html(htmlData);
+            }
+        })
+    }
+
+    function getAddressByCity() {
+        var city = $('#city').val();
+        $.ajax({
+            async:true,
+            type:'get',
+            url:'/house/address/city',
+            data:{
+                "city":city
+            },
+            dataType:'json',
+            cache:false,
+            success:function (data) {
+                var addressInfoList = data["data"];
+                var htmlData = "";
+                var regionList=new Array();
+                for(var i=0;i<addressInfoList.length;i++)
+                {
+                    if(regionList.indexOf(addressInfoList[i].region)===-1)
+                        regionList.push(addressInfoList[i].region);
+                }
+
+                for(var i=0;i<regionList.length;i++)
+                {
+                    htmlData+="<option value="+regionList[i]+">"+regionList[i]+"</option>"
+                }
+                $("#region").html(htmlData);
+            }
+        })
+    }
+    
+    function getAgencyByAddress(){
+        var province = $('#province').val();
+        var city = $('#city').val();
+        var region = $('#region').val();
+        $.ajax({
+            async:true,
+            type:'get',
+            url:'/house/agency/getAgencyListByAddress',
+            data:{
+                "province":province,
+                "city":city,
+                "region":region,
+            },
+            dataType:'json',
+            cache:false,
+            success:function (data) {
+                var agencyInfoList = data["data"];
+                var htmlData = "";
+                for (var i=0;i<agencyInfoList.length;i++)
+                {
+                    htmlData+="<option value="+agencyInfoList[i].agencyId+">"+agencyInfoList[i].name+"</option>";
+                }
+                $('#agency').html(htmlData);
+            }
+        })
+    }
+</script>
+
+</html>

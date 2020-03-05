@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 数据库驱动 -->
+    <properties resource="application.properties" />
+    <!-- 指定数据连接驱动jar地址 -->
+    <classPathEntry location="C:\Users\lenovo\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar" />
+    <context id="mysqlgenerator" targetRuntime="MyBatis3">
+        <property name="autoDelimitKeywords" value="true"/>
+        <!--可以使用``包括字段名，避免字段名与sql保留字冲突报错-->
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <!-- 自动生成toString方法 -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <!-- 自动生成equals方法和hashcode方法 -->
+        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
+
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--数据库连接信息-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/housemanager?serverTimezone=UTC"
+                        userId="root"
+                        password="1234" />
+
+
+        <javaModelGenerator targetPackage="com.example.demo.entity" targetProject="src/main/java" />
+        <javaClientGenerator type="ANNOTATEDMAPPER" targetPackage="com.example.demo.dao" targetProject="src/main/java" />
+        <!--表名-->
+        <!--<table tableName="address_info">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="admin_info">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="agency_info">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="agency_state">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="house_info">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="house_picture">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="house_state">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="order_info">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <table tableName="user_info">
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+        <!--<table tableName="village_info">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="village_picture">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+    </context>
+</generatorConfiguration>

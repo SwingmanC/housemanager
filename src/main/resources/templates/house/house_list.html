@@ -1,0 +1,598 @@
+﻿<!DOCTYPE html>
+<!--[if IE 7]><html class="ie ie7"><![endif]-->
+<!--[if IE 8]><html class="ie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie ie9"><![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/house_head::head('房产列表')"></head>
+<!--[if IE 7]><body class="ie7 lt-ie8 lt-ie9 lt-ie10"><![endif]-->
+<!--[if IE 8]><body class="ie8 lt-ie9 lt-ie10"><![endif]-->
+<!--[if IE 9]><body class="ie9 lt-ie10"><![endif]-->
+<body class="ps-loading">
+<div class="header--sidebar"></div>
+
+
+<header class="header">
+	<header th:replace="common/house_header::top"></header>
+	<div th:if="${session.userInfo==null&&session.adminInfo==null}">
+		<nav class="navigation">
+			<div class="container-fluid">
+				<div class="navigation__column left">
+					<div class="header__logo"><a class="ps-logo" th:href="@{/index}"><img th:src="@{/images/logo.png}" alt=""></a></div>
+				</div>
+				<div class="navigation__column center">
+
+					<ul class="main-menu menu">
+
+						<li class="menu-item menu-item-has-children dropdown"><a th:href="@{/index}">主页</a></li>
+
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<div th:if="${session.userInfo!=null}">
+		<header th:replace="common/user_menu::user_menu"></header>
+	</div>
+	<div th:if="${session.adminInfo!=null}">
+		<header th:replace="common/admin_menu::admin_menu"></header>
+	</div>
+</header>
+
+
+
+<div class="header-services">
+  <div class="ps-services owl-slider" data-owl-auto="true" data-owl-loop="true" data-owl-speed="7000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="false" data-owl-item="1" data-owl-item-xs="1" data-owl-item-sm="1" data-owl-item-md="1" data-owl-item-lg="1" data-owl-duration="1000" data-owl-mousedrag="on">
+	<p class="ps-service"><i class="ps-icon-delivery"></i><strong>Free delivery</strong>: Get free standard delivery on every order with Shoe Store</p>
+	<p class="ps-service"><i class="ps-icon-delivery"></i><strong>Free delivery</strong>: Get free standard delivery on every order with Shoe Store</p>
+	<p class="ps-service"><i class="ps-icon-delivery"></i><strong>Free delivery</strong>: Get free standard delivery on every order with Shoe Store</p>
+  </div>
+</div>
+
+
+
+<main class="ps-main">
+
+  <div class="ps-products-wrap pt-80 pb-80">
+
+	<div class="ps-products">
+
+	  <div class="ps-product-action">
+		<!--<div class="ps-product__filter">-->
+		  <!--<select class="ps-select selectpicker">-->
+			<!--<option value="1">Shortby</option>-->
+			<!--<option value="2">Name</option>-->
+			<!--<option value="3">价格 (Low to High)</option>-->
+			<!--<option value="3">价格(High to Low)</option>-->
+		  <!--</select>-->
+		<!--</div>-->
+		<div class="ps-pagination">
+		  <ul class="pagination">
+			<li><a href="#"><i class="fa fa-angle-left"></i></a></li>
+			<li class="active"><a href="#">1</a></li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">...</a></li>
+			<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+		  </ul>
+		</div>
+	  </div>
+		<div class="ps-product__columns" id="houselist">
+		<div class="ps-product__column" th:if="${houseList.size()>0}" th:each="house:${houseList}">
+		  <div class="ps-shoe mb-30">
+			<div class="ps-shoe__thumbnail">
+			  <div class="ps-badge"><span>New</span></div>
+			  <!--<div class="ps-badge ps-badge&#45;&#45;sale ps-badge&#45;&#45;2nd">-->
+				  <!--<span></span>-->
+			  <!--</div>-->
+				<a class="ps-shoe__favorite" href="#">
+					<i class="ps-icon-heart"></i>
+				</a>
+				<img th:if="${house.getHousePictures().size()>0}" th:src="${house.getHousePictures().get(0).getPictureUrl()}" alt="">
+				<a class="ps-shoe__overlay" th:href="@{'/getHouseInfo?houseId='+${house.getHouseId()}}"></a>
+			</div>
+			<div class="ps-shoe__content">
+			  <div class="ps-shoe__variants">
+				<div class="ps-shoe__variant normal">
+					<img th:each="housePicture:${house.getHousePictures()}" th:src="${housePicture.getPictureUrl()}" alt="">
+				</div>
+				<select class="ps-rating ps-shoe__rating">
+				  <option value="1">1</option>
+				  <option value="1">2</option>
+				  <option value="1">3</option>
+				  <option value="1">4</option>
+				  <option value="2">5</option>
+				</select>
+			  </div>
+				<div class="ps-shoe__detail"><a class="ps-shoe__name" th:href="@{'/getHouseInfo?houseId='+${house.getHouseId()}}" th:text="${house.location}"></a>
+					<p class="ps-shoe__categories">
+						<a href="#" th:text="${house.type}"></a>,
+						<a href="#" th:text="${house.area}+'m^2'"></a>
+					</p>
+				</div>
+			</div>
+		  </div>
+		</div>
+	</div>
+
+
+	</div>
+
+
+	  <script type="text/javascript">
+		  var citynumber=-1;
+		  var yearnumber=-1;
+		  var areanumber=-1;
+
+		  var citystring;
+		  var minprice;
+		  var maxprice;
+		  var minyear;
+		  var maxyear;
+		  var minarea;
+		  var maxarea;
+
+
+		  function cal() {
+			  if(citynumber==="-1") citystring = null;
+			  else if(citynumber==="0") citystring="北京";
+			  else if(citynumber==="1") citystring="长沙";
+			  else if(citynumber==="2") citystring="杭州";
+			  else if(citynumber==="3") citystring="上海";
+			  else if(citynumber==="4") citystring="广州";
+			  else if(citynumber==="5") citystring="南京";
+			  else if(citynumber==="6") citystring="武汉";
+
+
+
+			  maxyear=2019;
+			  if(yearnumber==="-1") minyear=maxyear=null;
+			  else if(yearnumber==="0") minyear=2018;
+			  else if(yearnumber==="1") minyear=2016;
+			  else if(yearnumber==="2") minyear=2013;
+			  else if(yearnumber==="3") minyear=2009;
+			  else if(yearnumber==="4") minyear=2004;
+			  else if(yearnumber==="5") minyear=1999;
+			  else if(yearnumber==="6") minyear=1000;
+
+
+			  if(areanumber==="-1") minarea=maxarea=null;
+			  else if(areanumber==="0") {
+				  minarea=0;
+				  maxarea=50;
+			  }
+			  else if(areanumber==="1") {
+				  minarea=50;
+				  maxarea=150;
+			  }
+			  else if(areanumber==="2") {
+				  minarea=150;
+				  maxarea=300;
+			  }
+			  else if(areanumber==="3") {
+				  minarea=300;
+				  maxarea=500;
+			  }
+			  else if(areanumber==="4") {
+				  minarea=500;
+				  maxarea=750;
+			  }
+			  else if(areanumber==="5") {
+				  minarea=750;
+				  maxarea=1000;
+			  }
+			  else if(areanumber==="6") {
+				  minarea=1000;
+				  maxarea=10000;
+			  }
+		  }
+
+
+
+
+
+		  function findcity(bb){
+			  citynumber=bb.getAttribute("value");
+			  var obj = document.getElementById("CITY").getElementsByTagName("li");
+			//  var son = document.getElementById("houselist").getElementsByClassName("ps-product__column");
+
+
+			  for (i = 0; i < obj.length; i++) {
+				  if(obj[i].getAttribute("value")===citynumber) obj[i].setAttribute("class","current" );
+				  else obj[i].removeAttribute("class",null);
+			  }
+			  //update();
+		  }
+
+		  function findarea(bb){
+			  areanumber=bb.getAttribute("value");
+			  var obj = document.getElementById("AREA").getElementsByTagName("li");
+			  for (i = 0; i < obj.length; i++) {
+				  if(obj[i].getAttribute("value")===areanumber) obj[i].setAttribute("class","current" );
+				  else obj[i].removeAttribute("class",null);
+			  }
+			  //update();
+		  }
+
+		  function findyear(bb){
+			  yearnumber=bb.getAttribute("value");
+			  var obj = document.getElementById("YEAR").getElementsByTagName("li");
+			  for (i = 0; i < obj.length; i++) {
+				  if(obj[i].getAttribute("value")===yearnumber) obj[i].setAttribute("class","current" );
+				  else obj[i].removeAttribute("class",null);
+			  }
+			 //update();
+		  }
+
+		  function findprice(){
+			  var a=$("#MIN").text(),b=$("#MAX").text();
+			  minprice=maxprice="";
+			  for(var i=1;i<a.length;i++) minprice=minprice+a[i];
+			  for(i=1;i<b.length;i++) maxprice=maxprice+b[i];
+			  //update();
+		  }
+
+
+		  function update() {
+			  //alert("hhaha");
+               cal();
+
+			  $.ajax({
+				  type : "GET",
+				  url : "/house/getHouseList",
+				  data :{
+					  "city" : citystring,
+					  "min_price" : minprice,
+					  "max_price" : maxprice,
+					  "min_area" : minarea,
+					  "max_area" : maxarea,
+					  "min_c_time" : minyear,
+					  "max_c_time" : maxyear
+				  },
+				  async:true,
+				  datetype :'json',
+				  success : function(res){
+
+					  // var p,pp,obj,son = document.getElementById("houselist").getElementsByClassName("ps-product__column");
+					  // for(var i=0;i<son.length;i++) son[i].style.display='none';
+					  // for(i=0;i<res.length;i++){
+						//   son[i].style.display='block';
+						//   pp=son[i].getElementsByClassName("ps-shoe__detail");
+						//   p=pp[0];
+                      //     obj=p.getElementsByTagName("a");
+						//   for(var j=0;j<obj.length;j++) {
+					  //
+						//        if(j===0) obj[j].textContent=res[i].location;
+						//        else if(j===1) obj[j].textContent=res[i].type+"  ";
+						// 	   else if(j===2) obj[j].textContent=res[i].area+'m^2'+"  ";
+						//   }
+						//   obj=p.getElementsByTagName("span")[0];
+						//   obj.textContent="总价:   "+res[i].totalPrice+"元";
+					  // }
+
+					  if (res.length===0)
+					  {
+					      $('#houselist').html("<font color='#808080'>该条件下无房产</font>")
+					  }
+
+
+					  var html="";
+					  for(var i=0;i<res.length;i++){
+						  var k=i+1;
+						  html+='<div class="ps-product__column">';
+						  html+='<div class="ps-shoe mb-30">';
+						  html+='<div class="ps-shoe__thumbnail"><a class="ps-shoe__favorite" href="#"><i class="ps-icon-heart"></i></a><img src="'+ res[i].housePictures[0].pictureUrl +'" alt=""><a class="ps-shoe__overlay" href="#"></a>';
+						  html+='</div>';
+						  html+='<div class="ps-shoe__content">';
+						  html+='<div class="ps-shoe__variants">';
+						  html+='<div class="ps-shoe__variant normal"></div>';
+						  html+='<select class="ps-rating ps-shoe__rating"><option value="1">1</option><option value="1">2</option><option value="1">3</option><option value="1">4</option><option value="2">5</option></select></div>';
+						  html+='<div class="ps-shoe__detail"><a class="ps-shoe__name" href="/house/getHouseInfo?houseId=';
+						  html+=res[i].houseId;
+						  html+='">';
+						  html+=res[i].location;
+						  html+='</a>';
+						  html+='<p class="ps-shoe__categories"><a href="#">';
+						  html+=res[i].type;
+						  html+='</a>';
+						  html+=',<a href="#">';
+						  html+=res[i].area+'m^2';
+						  html+='</a>,<a href="#"> </a></p><span class="ps-shoe__price">';
+						  html+='</span>\n';
+						  html+='</div></div></div></div>';
+					  }
+					  $("#houselist").html(html);
+
+				  }
+			  });
+		  }
+	  </script>
+
+
+	  <div class="ps-sidebar" >
+		  <aside class="ps-widget--sidebar ps-widget--category">
+			  <div class="ps-widget__header">
+				  <h3>城市</h3>
+			  </div>
+			  <div class="ps-widget__content">
+				  <ul class="ps-list--checked"  id="CITY">
+					  <li onclick="findcity(this)" value="0"><a href="#2"> 北京</a></li>
+					  <li onclick="findcity(this)" value="1"><a href="#2"> 长沙</a></li>
+					  <li onclick="findcity(this)" value="2"><a href="#2"> 杭州</a></li>
+					  <li onclick="findcity(this)" value="3"><a href="#2"> 上海</a></li>
+					  <li onclick="findcity(this)" value="4"><a href="#2"> 广州</a></li>
+					  <li onclick="findcity(this)" value="5"><a href="#2"> 南京</a></li>
+					  <li onclick="findcity(this)" value="6"><a href="#2"> 武汉</a></li>
+				  </ul>
+			  </div>
+		  </aside>
+
+
+		  <aside class="ps-widget--sidebar ps-widget--category">
+			  <div class="ps-widget__header">
+				  <h3>面积/平方米</h3>
+			  </div>
+			  <div class="ps-widget__content">
+				  <ul class="ps-list--checked" id="AREA">
+					  <li onclick="findarea(this)" value="0"><a href="#2"> 50以下</a></li>
+					  <li onclick="findarea(this)" value="1"><a href="#2"> 50-150</a></li>
+					  <li onclick="findarea(this)" value="2"><a href="#2"> 150-300</a></li>
+					  <li onclick="findarea(this)" value="3"><a href="#2"> 300-500</a></li>
+					  <li onclick="findarea(this)" value="4"><a href="#2"> 500-750</a></li>
+					  <li onclick="findarea(this)" value="5"><a href="#2"> 750-1000</a></li>
+					  <li onclick="findarea(this)" value="6"><a href="#2"> 1000以上</a></li>
+				  </ul>
+			  </div>
+		  </aside>
+
+
+		  <aside class="ps-widget--sidebar ps-widget--category">
+			  <div class="ps-widget__header">
+				  <h3>建成年份</h3>
+			  </div>
+			  <div class="ps-widget__content">
+				  <ul class="ps-list--checked" id="YEAR">
+					  <li onclick="findyear(this)" value="0"><a href="#2"> 1年内</a></li>
+					  <li onclick="findyear(this)" value="1"><a href="#2"> 3年内</a></li>
+					  <li onclick="findyear(this)" value="2"><a href="#2"> 6年内</a></li>
+					  <li onclick="findyear(this)" value="3"><a href="#2"> 10年内</a></li>
+					  <li onclick="findyear(this)" value="4"><a href="#2"> 15年内</a></li>
+					  <li onclick="findyear(this)" value="5"><a href="#2"> 20年到</a></li>
+					  <li onclick="findyear(this)" value="6"><a href="#2"> 20年以上</a></li>
+				  </ul>
+			  </div>
+		  </aside>
+
+
+		  <aside class="ps-widget--sidebar ps-widget--filter">
+			  <div class="ps-widget__header">
+				  <h3>房价</h3>
+			  </div>
+			  <div class="ps-widget__content">
+				  <div class="ac-slider" data-default-min="2000" data-default-max="50000" data-max="500000" data-step="50"></div>
+				  <p class="ac-slider__meta">
+					  <span class="ac-slider__value ac-slider__min" id="MIN" value=""></span>-<span class="ac-slider__value ac-slider__max" id="MAX"></span>
+				  </p>
+				  <a class="ac-slider__filter ps-btn" href="#2" onclick="findprice()">确定</a>
+				  <a class="ac-slider__filter ps-btn" href="#2" onclick="update()">查找</a>
+			  </div>
+		  </aside>
+
+
+
+	  <div class="ps-sticky desktop">
+		<aside class="ps-widget--sidebar">
+		  <div class="ps-widget__header">
+			<h3>楼层</h3>
+		  </div>
+		  <div class="ps-widget__content">
+			<table class="table ps-table--size">
+			  <tbody>
+				<tr>
+				  <td class="active">1-2</td>
+				  <td>3-4</td>
+				  <td>5-6</td>
+				  <td>7-8</td>
+				  <td>9-10</td>
+				</tr>
+				<tr>
+				  <td>11-12</td>
+				  <td>13-14</td>
+				  <td>15-16</td>
+				  <td>17-18</td>
+				  <td>19-20</td>
+				</tr>
+				<tr>
+					<td>21-22</td>
+				  <td>23-24</td>
+				  <td>25-26</td>
+				  <td>27-28</td>
+				  <td>29-30</td>
+				</tr>
+				<tr>
+				   <td>31-32</td>
+				  <td>33-34</td>
+				  <td>35-36</td>
+				  <td>37-38</td>
+				  <td>39-40</td>
+				</tr>
+				<tr>
+					   <td>41-42</td>
+					  <td>43-44</td>
+					  <td>45-46</td>
+					  <td>47-48</td>
+					  <td>49-50</td>
+				</tr>
+			  </tbody>
+			</table>
+		  </div>
+		</aside>
+
+
+		<aside class="ps-widget--sidebar">
+		  <div class="ps-widget__header">
+			<h3>Color</h3>
+		  </div>
+		  <div class="ps-widget__content">
+			<ul class="ps-list--color">
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			  <li><a href="#"></a></li>
+			</ul>
+		  </div>
+		</aside>
+	  </div>
+	  <!--aside.ps-widget--sidebar-->
+	  <!--    .ps-widget__header: h3 Ads Banner-->
+	  <!--    .ps-widget__content-->
+	  <!--        a(href='product-listing'): img(th:src="@{/images/offer/sidebar.jpg}" alt="")-->
+	  <!---->
+	  <!--aside.ps-widget--sidebar-->
+	  <!--    .ps-widget__header: h3 Best Seller-->
+	  <!--    .ps-widget__content-->
+	  <!--        - for (var i = 0; i < 3; i ++)-->
+	  <!--            .ps-shoe--sidebar-->
+	  <!--                .ps-shoe__thumbnail-->
+	  <!--                    a(href='#')-->
+	  <!--                    img(th:src="@{/images/shoe/sidebar/"+(i+1)+".jpg}" alt="")-->
+	  <!--                .ps-shoe__content-->
+	  <!--                    if i == 1-->
+	  <!--                        a(href='#').ps-shoe__title Nike Flight Bonafide-->
+	  <!--                    else if i == 2-->
+	  <!--                        a(href='#').ps-shoe__title Nike Sock Dart QS-->
+	  <!--                    else-->
+	  <!--                        a(href='#').ps-shoe__title Men's Shoe-->
+	  <!--                    p <del> £253.00</del> £152.00-->
+	  <!--                    a(href='#').ps-btn PURCHASE-->
+	</div>
+  </div>
+
+
+
+	<div class="ps-subscribe">
+		<div class="ps-container">
+			<div class="row">
+				<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+					<h3><i class="fa fa-envelope"></i>Sign up to Newsletter</h3>
+				</div>
+				<div class="col-lg-5 col-md-7 col-sm-12 col-xs-12 ">
+					<form class="ps-subscribe__form" action="do_action" method="post">
+						<input class="form-control" type="text" placeholder="">
+						<button>Sign up now</button>
+					</form>
+				</div>
+				<div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 ">
+					<p>...and receive  <span>$20</span>  coupon for first shopping.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ps-footer bg--cover" data-background="/house/images/background/parallax.jpg}">
+		<div class="ps-footer__content">
+			<div class="ps-container">
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+						<aside class="ps-widget--footer ps-widget--info">
+							<header><a class="ps-logo" href="index.html"><img th:src="@{/images/logo-white.png}" alt=""></a>
+								<h3 class="ps-widget__title">Address Office 1</h3>
+							</header>
+							<footer>
+								<p><strong>460 West 34th Street, 15th floor, New York</strong></p>
+								<p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+								<p>Phone: +323 32434 5334</p>
+								<p>Fax: ++323 32434 5333</p>
+							</footer>
+						</aside>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+						<aside class="ps-widget--footer ps-widget--info second">
+							<header>
+								<h3 class="ps-widget__title">Address Office 2</h3>
+							</header>
+							<footer>
+								<p><strong>PO Box 16122 Collins  Victoria 3000 Australia</strong></p>
+								<p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+								<p>Phone: +323 32434 5334</p>
+								<p>Fax: ++323 32434 5333</p>
+							</footer>
+						</aside>
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+						<aside class="ps-widget--footer ps-widget--link">
+							<header>
+								<h3 class="ps-widget__title">Find Our store</h3>
+							</header>
+							<footer>
+								<ul class="ps-list--link">
+									<li><a href="#">Coupon Code</a></li>
+									<li><a href="#">SignUp For Email</a></li>
+									<li><a href="#">Site Feedback</a></li>
+									<li><a href="#">Careers</a></li>
+								</ul>
+							</footer>
+						</aside>
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+						<aside class="ps-widget--footer ps-widget--link">
+							<header>
+								<h3 class="ps-widget__title">Get Help</h3>
+							</header>
+							<footer>
+								<ul class="ps-list--line">
+									<li><a href="#">Order Status</a></li>
+									<li><a href="#">Shipping and Delivery</a></li>
+									<li><a href="#">Returns</a></li>
+									<li><a href="#">Payment Options</a></li>
+									<li><a href="#">Contact Us</a></li>
+								</ul>
+							</footer>
+						</aside>
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+						<aside class="ps-widget--footer ps-widget--link">
+							<header>
+								<h3 class="ps-widget__title">Products</h3>
+							</header>
+							<footer>
+								<ul class="ps-list--line">
+									<li><a href="#">Shoes</a></li>
+									<li><a href="#">Clothing</a></li>
+									<li><a href="#">Accessries</a></li>
+									<li><a href="#">Football Boots</a></li>
+								</ul>
+							</footer>
+						</aside>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="ps-footer__copyright">
+			<div class="ps-container">
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+						<p>Copyright &copy; 2019.CSU-SoftWare All rights reserved.</p>
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+						<ul class="ps-social">
+							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fa fa-instagram"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+</body>
+</html>

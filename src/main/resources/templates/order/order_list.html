@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<!--[if IE 7]><html class="ie ie7"><![endif]-->
+<!--[if IE 8]><html class="ie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie ie9"><![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/house_head::head('订单列表')"></head>
+<!--[if IE 7]><body class="ie7 lt-ie8 lt-ie9 lt-ie10"><![endif]-->
+<!--[if IE 8]><body class="ie8 lt-ie9 lt-ie10"><![endif]-->
+<!--[if IE 9]><body class="ie9 lt-ie10"><![endif]-->
+<body class="ps-loading">
+<div class="header--sidebar"></div>
+
+
+<header class="header">
+  <header th:replace="common/house_header::top"></header>
+	<div th:if="${session.userInfo==null&&session.adminInfo==null}">
+		<nav class="navigation">
+			<div class="container-fluid">
+				<div class="navigation__column left">
+					<div class="header__logo"><a class="ps-logo" th:href="@{/index}"><img th:src="@{/images/logo.png}" alt=""></a></div>
+				</div>
+				<div class="navigation__column center">
+
+					<ul class="main-menu menu">
+
+						<li class="menu-item menu-item-has-children dropdown"><a th:href="@{/index}">主页</a></li>
+
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<div th:if="${session.userInfo!=null}">
+		<header th:replace="common/user_menu::user_menu"></header>
+	</div>
+	<div th:if="${session.adminInfo!=null}">
+		<header th:replace="common/admin_menu::admin_menu"></header>
+	</div>
+</header>
+
+
+
+<div class="header-services">
+  <div class="ps-services owl-slider" data-owl-auto="true" data-owl-loop="true" data-owl-speed="7000" data-owl-gap="0" data-owl-nav="true" data-owl-dots="false" data-owl-item="1" data-owl-item-xs="1" data-owl-item-sm="1" data-owl-item-md="1" data-owl-item-lg="1" data-owl-duration="1000" data-owl-mousedrag="on">
+	<p class="ps-service"><i class="ps-icon-delivery"></i><strong>Free delivery</strong>: Get free standard delivery on every order with Shoe Store</p>
+	<p class="ps-service"><i class="ps-icon-delivery"></i><strong>Free delivery</strong>: Get free standard delivery on every order with Shoe Store</p>
+	<p class="ps-service"><i class="ps-icon-delivery"></i><strong>Free delivery</strong>: Get free standard delivery on every order with Shoe Store</p>
+  </div>
+</div>
+
+
+
+    <div class="main">
+      <div class="container">
+        <ul class="breadcrumb">
+            <li><a th:href="index">主页</a></li>
+            <li class="active">订单列表</li>
+        </ul>
+        <!-- BEGIN SIDEBAR & CONTENT -->
+        <div class="row margin-bottom-40">
+          <!-- BEGIN SIDEBAR -->
+			<div class="sidebar col-md-3 col-sm-5">
+				<ul class="list-group margin-bottom-25 sidebar-menu">
+					<li class="list-group-item clearfix"><a th:href="@{/user/viewChangePassword}"><i class="fa fa-angle-right"></i>修改密码</a></li>
+					<li class="list-group-item clearfix"><a th:href="@{/user/viewChangeUserInfo}"><i class="fa fa-angle-right"></i>完善个人信息</a></li>
+					<li class="list-group-item clearfix"><a th:href="@{/getUserHouseList}"><i class="fa fa-angle-right"></i>我的房产</a></li>
+					<li class="list-group-item clearfix"><a th:href="@{'/order/getOrdersByUserId?userId='+${session.userInfo.userId}}"><i class="fa fa-angle-right"></i>我的订单</a></li>
+				</ul>
+			</div>
+          <!-- END SIDEBAR -->
+
+          <!-- BEGIN CONTENT -->
+          <div class="col-md-9 col-sm-7">
+            <h1>我的订单</h1>
+            <div class="goods-page">
+              <div class="goods-data clearfix">
+                <div class="table-wrapper-responsive">
+                <table summary="Shopping cart">
+
+
+                  <tr>
+                    <th class="goods-page-image">图片</th>
+                    <th class="goods-page-description">订单Id</th>
+                    <th class="goods-page-stock">下单日期</th>
+                    <th class="goods-page-price" colspan="2">定金</th>
+                  </tr>
+
+
+
+                  <tr th:each="orderInfo:${orderInfoList}">
+                    <td class="goods-page-image">
+                      <a href="javascript:;"><img th:src="@{/assets/pages/img/products/model3.jpg}" alt="Berry Lace Dress"></a>
+                    </td>
+                    <td class="goods-page-description">
+                      <h3><a href="order_detail.html" th:href="@{'/order/getOrderByOrderId?orderId='+${orderInfo.getOrderId()}}" th:text="${orderInfo.orderId}">Cool green dress with red bell</a></h3>
+                      <em>More info is here</em>
+                    </td>
+                    <td class="goods-page-stock" th:text="${#dates.format(orderInfo.getCreateTime(),'yyyy-MM-dd HH:mm:ss')}">
+                      In Stock
+                    </td>
+                    <td class="goods-page-price" th:text="${orderInfo.getPrice()}">
+                      <strong><span>$</span>47.00</strong>
+                    </td>
+                    <td class="del-goods-col">
+                      <a class="del-goods" href="javascript:;">&nbsp;</a>
+                      <a class="add-goods" href="javascript:;">&nbsp;</a>
+                    </td>
+                  </tr>
+
+
+
+
+                </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- END CONTENT -->
+        </div>
+        <!-- END SIDEBAR & CONTENT -->
+      </div>
+    </div>
+<div class="ps-subscribe">
+	<div class="ps-container">
+		<div class="row">
+			<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+				<h3><i class="fa fa-envelope"></i>Sign up to Newsletter</h3>
+			</div>
+			<div class="col-lg-5 col-md-7 col-sm-12 col-xs-12 ">
+				<form class="ps-subscribe__form" action="do_action" method="post">
+					<input class="form-control" type="text" placeholder="">
+					<button>Sign up now</button>
+				</form>
+			</div>
+			<div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 ">
+				<p>...and receive  <span>$20</span>  coupon for first shopping.</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="ps-footer bg--cover" data-background="/house/images/background/parallax.jpg}">
+	<div class="ps-footer__content">
+		<div class="ps-container">
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--info">
+						<header><a class="ps-logo" href="index.html"><img th:src="@{/images/logo-white.png}" alt=""></a>
+							<h3 class="ps-widget__title">Address Office 1</h3>
+						</header>
+						<footer>
+							<p><strong>460 West 34th Street, 15th floor, New York</strong></p>
+							<p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+							<p>Phone: +323 32434 5334</p>
+							<p>Fax: ++323 32434 5333</p>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--info second">
+						<header>
+							<h3 class="ps-widget__title">Address Office 2</h3>
+						</header>
+						<footer>
+							<p><strong>PO Box 16122 Collins  Victoria 3000 Australia</strong></p>
+							<p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+							<p>Phone: +323 32434 5334</p>
+							<p>Fax: ++323 32434 5333</p>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Find Our store</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--link">
+								<li><a href="#">Coupon Code</a></li>
+								<li><a href="#">SignUp For Email</a></li>
+								<li><a href="#">Site Feedback</a></li>
+								<li><a href="#">Careers</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Get Help</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--line">
+								<li><a href="#">Order Status</a></li>
+								<li><a href="#">Shipping and Delivery</a></li>
+								<li><a href="#">Returns</a></li>
+								<li><a href="#">Payment Options</a></li>
+								<li><a href="#">Contact Us</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Products</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--line">
+								<li><a href="#">Shoes</a></li>
+								<li><a href="#">Clothing</a></li>
+								<li><a href="#">Accessries</a></li>
+								<li><a href="#">Football Boots</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ps-footer__copyright">
+		<div class="ps-container">
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+					<p>Copyright &copy; 2019.CSU-SoftWare All rights reserved.</p>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+					<ul class="ps-social">
+						<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+						<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#"><i class="fa fa-instagram"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</main>
+</body>
+</html>

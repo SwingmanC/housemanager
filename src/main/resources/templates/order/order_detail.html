@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<!--[if IE 7]><html class="ie ie7"><![endif]-->
+<!--[if IE 8]><html class="ie ie8"><![endif]-->
+<!--[if IE 9]><html class="ie ie9"><![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/house_head::head('订单列表')"></head>
+<!--[if IE 7]><body class="ie7 lt-ie8 lt-ie9 lt-ie10"><![endif]-->
+<!--[if IE 8]><body class="ie8 lt-ie9 lt-ie10"><![endif]-->
+<!--[if IE 9]><body class="ie9 lt-ie10"><![endif]-->
+<body class="ps-loading">
+<div class="header--sidebar"></div>
+
+
+<header class="header">
+	<header th:replace="common/house_header::top"></header>
+	<div th:if="${session.userInfo==null&&session.adminInfo==null}">
+		<nav class="navigation">
+			<div class="container-fluid">
+				<div class="navigation__column left">
+					<div class="header__logo"><a class="ps-logo" th:href="@{/index}"><img th:src="@{/images/logo.png}" alt=""></a></div>
+				</div>
+				<div class="navigation__column center">
+
+					<ul class="main-menu menu">
+
+						<li class="menu-item menu-item-has-children dropdown"><a th:href="@{/index}">主页</a></li>
+
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<div th:if="${session.userInfo!=null}">
+		<header th:replace="common/user_menu::user_menu"></header>
+	</div>
+	<div th:if="${session.adminInfo!=null}">
+		<header th:replace="common/admin_menu::admin_menu"></header>
+	</div>
+</header>
+
+
+
+
+
+    <div class="main">
+      <div class="container">
+        <ul class="breadcrumb">
+            <li><a th:href="@{/index}">主页</a></li>
+            <li class="active">订单详情</li>
+        </ul>
+        <!-- BEGIN SIDEBAR & CONTENT -->
+        <div class="row margin-bottom-40">
+          <div class="col-md-9 col-sm-7">
+
+            <h1>订单详情</h1>
+            <div class="goods-page">
+              <div class="goods-data clearfix">
+                <div class="table-wrapper-responsive">
+                <table summary="Shopping cart">
+                    <h2>中介</h2>
+                    <tr>
+                        <td  class="goods-page-stock" th:text="'中介公司:'+${agencyInfo.getName()}">
+                             <strong><span>中介公司：</span>牛逼</strong>
+                        </td>
+                        <td  class="goods-page-stock" th:text="'城市:'+${agencyInfo.getLocation()}">
+                             <strong><span>城市：</span>长沙</strong>
+                        </td>
+
+                        <td  class="goods-page-stock" th:text="'邮件:'+${agencyInfo.getEmail()}">
+                             <strong><span>邮件：</span>12345@163.com</strong>
+                        </td>
+                        <td class="goods-page-price" th:text="'联系电话:'+${agencyInfo.getTelephone()}">
+                             <strong><span>联系电话：</span>234567</strong>
+                        </td>
+                    </tr>
+                </table>
+
+                    <br>
+
+                    <table summary="Shopping cart">
+                         <h2>订单信息</h2>
+                         <tr>
+                              <td  class="goods-page-stock" th:text="'订单ID:'+${orderInfo.getOrderId()}">
+                                  <strong><span>订单ID：</span>454563722</strong>
+                              </td>
+                         </tr>
+                         <tr>
+                              <td  class="goods-page-stock" th:text="'买家ID:'+${orderInfo.getUserId()}">
+                                  <strong><span>买家ID：</span>杰哥</strong>
+                              </td>
+                         </tr>
+                         <tr>
+                              <td  class="goods-page-stock" th:text="'成交时间:'+${orderInfo.getCreateTime()}">
+                                   <strong><span>成交时间：</span>2019/01/01</strong>
+                              </td>
+                         </tr>
+
+                     </table>
+
+
+                     <table summary="Shopping cart">
+                        <tr>
+                             <th class="goods-page-image">Image</th>
+                             <th class="goods-page-description">Description</th>
+                             <th class="goods-page-price" colspan="2">Unit price</th>
+                        </tr>
+                        <tr>
+                             <td class="goods-page-image">
+                             <a href="javascript:;"><img src="assets/pages/img/products/model3.jpg}" alt="Berry Lace Dress"></a>
+                        </td>
+
+                        <td class="goods-page-description">
+                              <h3><a href="/getHouseInfo" th:text="${houseInfo.getLocation()}">房产名</a></h3>
+                              <p><strong>Item 1</strong> 地址 面积 房价 楼层</p>
+                         </td>
+
+                         <td class="goods-page-price" th:text="${houseInfo.getUnitPrice()}">
+                              <strong><span>$</span>47.00</strong>
+                          </td>
+                  </tr>
+
+                </table>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="ps-subscribe">
+	<div class="ps-container">
+		<div class="row">
+			<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+				<h3><i class="fa fa-envelope"></i>Sign up to Newsletter</h3>
+			</div>
+			<div class="col-lg-5 col-md-7 col-sm-12 col-xs-12 ">
+				<form class="ps-subscribe__form" action="do_action" method="post">
+					<input class="form-control" type="text" placeholder="">
+					<button>Sign up now</button>
+				</form>
+			</div>
+			<div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 ">
+				<p>...and receive  <span>$20</span>  coupon for first shopping.</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="ps-footer bg--cover" data-background="/house/images/background/parallax.jpg}">
+	<div class="ps-footer__content">
+		<div class="ps-container">
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--info">
+						<header><a class="ps-logo" href="index.html"><img th:src="@{/images/logo-white.png}" alt=""></a>
+							<h3 class="ps-widget__title">Address Office 1</h3>
+						</header>
+						<footer>
+							<p><strong>460 West 34th Street, 15th floor, New York</strong></p>
+							<p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+							<p>Phone: +323 32434 5334</p>
+							<p>Fax: ++323 32434 5333</p>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--info second">
+						<header>
+							<h3 class="ps-widget__title">Address Office 2</h3>
+						</header>
+						<footer>
+							<p><strong>PO Box 16122 Collins  Victoria 3000 Australia</strong></p>
+							<p>Email: <a href='mailto:support@store.com'>support@store.com</a></p>
+							<p>Phone: +323 32434 5334</p>
+							<p>Fax: ++323 32434 5333</p>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Find Our store</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--link">
+								<li><a href="#">Coupon Code</a></li>
+								<li><a href="#">SignUp For Email</a></li>
+								<li><a href="#">Site Feedback</a></li>
+								<li><a href="#">Careers</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Get Help</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--line">
+								<li><a href="#">Order Status</a></li>
+								<li><a href="#">Shipping and Delivery</a></li>
+								<li><a href="#">Returns</a></li>
+								<li><a href="#">Payment Options</a></li>
+								<li><a href="#">Contact Us</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 ">
+					<aside class="ps-widget--footer ps-widget--link">
+						<header>
+							<h3 class="ps-widget__title">Products</h3>
+						</header>
+						<footer>
+							<ul class="ps-list--line">
+								<li><a href="#">Shoes</a></li>
+								<li><a href="#">Clothing</a></li>
+								<li><a href="#">Accessries</a></li>
+								<li><a href="#">Football Boots</a></li>
+							</ul>
+						</footer>
+					</aside>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ps-footer__copyright">
+		<div class="ps-container">
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+					<p>Copyright &copy; 2019.CSU-SoftWare All rights reserved.</p>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+					<ul class="ps-social">
+						<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+						<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#"><i class="fa fa-instagram"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</main>
+</body>
+</html>

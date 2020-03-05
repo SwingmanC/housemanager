@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/account_head::head('管理员登录')"></head>
+	<body class="style-3">
+
+		<div class="container">
+			<header th:replace="common/account_header::header"></header>
+			<div class="row">
+				<div class="col-md-4 col-md-push-8">
+					
+
+					<!-- Start Sign In Form -->
+					<form action="/house/admin/login" method="post" class="fh5co-form animate-box" data-animate-effect="fadeInRight">
+						<h2>管理员登录</h2>
+						<div class="form-group">
+							<label for="telephone" class="sr-only">手机号</label>
+							<input type="text" class="form-control" id="telephone" placeholder="手机号" autocomplete="off" name="telephone">
+						</div>
+						<div class="form-group">
+							<label for="password" class="sr-only">密码</label>
+							<input type="password" class="form-control" id="password" placeholder="密码" autocomplete="off" name="password">
+							<div id="msg">
+								<font color="red" th:text="${msg}"></font>
+							</div>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="登录" class="btn btn-primary">
+						</div>
+					</form>
+					<!-- END Sign In Form -->
+
+
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
+

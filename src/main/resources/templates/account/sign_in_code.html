@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/account_head::head('用户登录')"></head>
+<body class="style-3">
+
+<div class="container">
+    <header th:replace="common/account_header::header"></header>
+    <div class="row">
+        <div class="col-md-4 col-md-push-8">
+
+
+            <!-- Start Sign In Form -->
+            <form action="/house/user/loginByTelephone" method="post" class="fh5co-form animate-box" data-animate-effect="fadeInRight">
+                <h2>用户登录</h2>
+                <div class="form-group">
+                    <label for="telephone" class="sr-only">手机号</label>
+                    <input type="text" class="form-control" id="telephone" placeholder="手机号" autocomplete="off" name="telephone" onblur="telephoneIsExist()">
+                    <div id="phoneMsg"></div>
+                </div>
+                <div class="form-group">
+                    <label for="messageCode" class="sr-only">验证码</label>
+                    <input type="text" class="form-control" id="messageCode" placeholder="6位验证码" autocomplete="off" name="messageCode" onblur="check()">
+                    <br>
+                    <br>
+                    <button id="veribnt" onclick="sendCode()" class="btn btn-primary" disabled="disabled">获取验证码</button>
+                    <div id="veriMsg"></div>
+                    <div id="msg">
+                        <font color="red" th:text="${msg}"></font>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p>还没注册? <a th:href="@{/user/viewRegister}">注册</a> | <a th:href="@{/user/viewLogin}">密码登录</a></p>
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="submit" value="登录" class="btn btn-primary" disabled="disabled">
+                </div>
+            </form>
+            <!-- END Sign In Form -->
+
+
+        </div>
+    </div>
+    <div class="row" style="padding-top: 60px; clear: both;">
+        <div class="col-md-12 text-center"><p><small>&copy; All Rights Reserved. Designed by <a href="https://freehtml5.co">CSU-Software</a></small></p></div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    var i=59;
+    var myVar;
+    function myFunction() {
+        document.getElementById("veribnt").disabled=true;
+        myVar=setInterval(timer,1000);
+    }
+    function timer(){
+        i--;
+        document.getElementById("veribnt").innerHTML=i;
+        if(i<=1)
+        {
+            window.clearInterval(myVar);
+            document.getElementById("veribnt").disabled=false;
+            document.getElementById("veribnt").innerHTML="获取验证码";
+        }
+    }
+
+    function telephoneIsExist() {
+        var telephone = $("#telephone").val();
+        if (telephone.trim() !== '')
+        {
+            $.ajax({
+                async:true,
+                type:'get',
+                url:'/house/user/telephoneIsExist',
+                data:{'telephone':telephone},
+                dataType:'json',
+                cache:false,
+                success:function (data) {
+                    if(data["data"]==='no')
+                    {
+                        $("#phoneMsg").html("<font color='red'>此号码未注册</font>")
+                    }
+                    else
+                    {
+                        $("#phoneMsg").html("");
+                        $("#veribnt").attr("disabled",false);
+                    }
+
+                },
+                error:function () {
+                    alert("系统错误");
+                }
+            });
+        };
+    }
+    function sendCode()
+    {
+        myFunction();
+        var telephone = $("#telephone").val();
+        $.ajax({
+            async:true,
+            type:'get',
+            url:'/house/user/getCode',
+            data:{
+                "telephone":telephone
+            },
+            dataType:'json',
+            cache:false,
+        });
+    }
+
+    function check() {
+        $.ajax({
+            async:true,
+            type:'get',
+            url:'/house/user/verify',
+            data:{
+                'telephone':$('#telephone').val(),
+                'messageCode':$('#messageCode').val()
+            },
+            dataType:'json',
+            cache:false,
+            success:function (data) {
+                if (data["data"]==="验证成功")
+                {
+                    $("#veriMsg").html("");
+                    $('#submit').attr("disabled",false);
+                    return true;
+                }
+                else if(data["message"]!=="success")
+                {
+                    $("#veriMsg").html("<font color='red'>验证码错误</font>")
+                    return false;
+                }
+            },
+            error:function () {
+            }
+        });
+    }
+</script>
+
+</html>
+

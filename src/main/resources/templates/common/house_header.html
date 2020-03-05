@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<header th:fragment="top">
+    <div class="header__top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6 col-md-8 col-sm-6 col-xs-12 ">
+                    <p>中南大学计算机学院软件工程系 热线：100-820-8820</p>
+                </div>
+                <div class="col-lg-6 col-md-4 col-sm-6 col-xs-12 ">
+                    <div class="header__actions">
+                        <a th:href="@{/user/viewLogin}" th:if="${session.userInfo==null&&session.adminInfo==null&&session.agencyInfo==null}">登录&&注册</a>
+                        <div class="btn-group ps-dropdown" th:if="${session.userInfo!=null}">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${session.userInfo!=null}">
+                                <font th:text="${session.userInfo.name}"></font><i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/user/viewChangePassword}" href="#">修改密码</a></li>
+                                <li><a th:href="@{/user/viewChangeUserInfo}" href="#">完善个人信息</a></li>
+                                <li><a th:href="@{'/order/getOrdersByUserId?userId='+${session.userInfo.userId}}" href="#">查看订单</a></li>
+                                <li><a th:href="@{/getUserHouseList}">我的房产</a></li>
+                                <li><a th:href="@{/user/logout}">注销</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group ps-dropdown" th:if="${session.adminInfo!=null}">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${session.adminInfo!=null}">
+                                <font th:text="${session.adminInfo.name}"></font><i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/admin/logout}">注销</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group ps-dropdown" th:if="${session.agencyInfo!=null}">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:if="${session.agencyInfo!=null}">
+                                <font th:text="${session.agencyInfo.name}"></font><i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/admin/logout}">退出</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+</html>
